@@ -1,24 +1,48 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
 
-    private static final String[] worlds = {"кефир", "спагетти", "тефтели", "курица", "картошка", "котлета"};
-
+    private static List<String> words; // словарь слов из файла
     private static final Scanner scanner = new Scanner(System.in);
-
     static int maxErrors = 6;
 
     public static void main(String[] args) {
+        loadWords("words.txt");
         runMainMenu();
+    }
+
+    // загрузка словаря
+    private static void loadWords(String fileName) {
+        try {
+            List<String> allLines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8); // чтение файла построчно
+
+            words = new ArrayList<>();
+            for (String line : allLines) {
+                String w = line.trim().toLowerCase(); // без пробелов, все буквы строчные
+                if (w.length() > 4) { // отбросить слишком короткие слова
+                    words.add(w);
+                }
+            }
+
+            if (words.isEmpty()) {
+                throw new IllegalStateException("Словарь пуст: " + fileName);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось прочитать файл слов: " + fileName, e);
+        }
     }
 
     // меню приложения
     private static void runMainMenu() {
         while (true) {
-            System.out.println("\nПриветствую Вас. Вы меня не знаете, но я Вас знаю. Я хочу поиграть с Вами в Виселицу\n");
+            System.out.println("\n" + "=".repeat(50));
+            System.out.println("\nПриветствую Вас. Вы меня не знаете, но я Вас знаю. Я хочу поиграть с Вами в Виселицу.");
             System.out.println("Начать новую игру?");
-            System.out.println("1 - да");
-            System.out.println("0 - нет");
+            System.out.println("1 - да / 0 - нет");
             System.out.println("\nВаш выбор:");
 
             String choice = scanner.nextLine();
@@ -51,11 +75,13 @@ public class Main {
 
             if (errors >= maxErrors) {
                 System.out.println("Вы проиграли! Загаданное слово: " + world);
+                System.out.println("\n" + "-".repeat(50));
                 break;
             }
 
             if (isWorldGuessed(answer)) {
                 System.out.println("Поздравляем! Вы отгадали слово: " + world);
+                System.out.println("\n" + "-".repeat(50));
                 break;
             }
 
@@ -64,6 +90,7 @@ public class Main {
 
             if (symbol.length() != 1) {
                 System.out.println("Введите ОДНУ букву.");
+                System.out.println("\n" + "-".repeat(50));
                 continue;
             }
 
@@ -72,11 +99,13 @@ public class Main {
             // только маленькие русские буквы
             if (ch < 'а' || ch > 'я') {
                 System.out.println("Введите маленькую букву кириллицы.");
+                System.out.println("\n" + "-".repeat(50));
                 continue;
             }
 
             if (usedLetters.contains(ch)) {
                 System.out.println("Эта буква уже была.");
+                System.out.println("\n" + "-".repeat(50));
                 continue;
             }
 
@@ -93,13 +122,14 @@ public class Main {
                 errors++;
                 System.out.println("Такой буквы нет!");
             }
+            System.out.println("\n" + "-".repeat(50));
         }
     }
 
     // выбор случайного слова
     private static String getRandomWorld() {
         Random random = new Random();
-        return worlds[random.nextInt(worlds.length)];
+        return words.get(random.nextInt(words.size()));
     }
 
     // отгадано ли слово
