@@ -5,6 +5,18 @@ public class MainWithMenu {
     private static final String START_COMMAND = "1";
     private static final String EXIT_COMMAND = "0";
 
+    private static final String RULES = """
+            
+            🎭 ПРАВИЛА ИГРЫ:
+            ┌─────────────────────────────────────┐
+            │ Я загадал слово из словаря.         │
+            │ У тебя 6 попыток угадать все буквы. │
+            │ Пиши ПО ОДНОЙ русской букве!        │
+            │           НЕ СПЕШИ...               │
+            │    6 ошибок = ИГРА ОКОНЧЕНА         │
+            └─────────────────────────────────────┘
+            """;
+
     public static void main(String[] args) {
         try {
             Dictionary dictionary = new Dictionary("words.txt", 5);
@@ -13,6 +25,7 @@ public class MainWithMenu {
                 while (true) {
                     System.out.println("\n" + "=".repeat(50));
                     System.out.println("\nПриветствую Вас. Вы меня не знаете, но я Вас знаю. Я хочу поиграть с Вами в Виселицу.");
+                    System.out.println(RULES);
                     System.out.println("Начать новую игру?");
                     System.out.printf("%s - да / %s - нет  %n", START_COMMAND, EXIT_COMMAND);
                     System.out.println("\nВаш выбор:");
