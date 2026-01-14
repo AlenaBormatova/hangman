@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class WordList {
+public class Dictionary {
 
     private final List<String> words;
     private final Random random = new Random();
 
-    public WordList(String fileName, int minWordLength) {
+    public Dictionary(String fileName, int minWordLength) {
         this.words = initializeFromFile(fileName, minWordLength);
     }
 

@@ -5,17 +5,17 @@ import java.util.TreeSet;
 
 public class HangmanGame {
     private static final int MAX_ERRORS = 6;
-    private final WordList wordList;
+    private final Dictionary dictionary;
     private final Scanner scanner;
 
-    public HangmanGame(WordList wordList, Scanner scanner) {
-        this.wordList = wordList;
+    public HangmanGame(Dictionary dictionary, Scanner scanner) {
+        this.dictionary = dictionary;
         this.scanner = scanner;
     }
 
     // один раунд игры
     void runGame() {
-        String word = wordList.getRandomWord();
+        String word = dictionary.getRandomWord();
         char[] answer = createAnswerArray(word);
         Set<Character> usedLetters = new TreeSet<>();
         int errors = 0;

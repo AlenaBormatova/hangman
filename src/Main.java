@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            WordList dictionary = new WordList("words.txt", 5);
+            Dictionary dictionary = new Dictionary("words.txt", 5);
             try (Scanner scanner = new Scanner(System.in)) {
                 HangmanGame game = new HangmanGame(dictionary, scanner);
                 while (true) {
