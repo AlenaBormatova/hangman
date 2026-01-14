@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Main {
+public class MainWithMenu {
 
     private static final String START_COMMAND = "1";
     private static final String EXIT_COMMAND = "0";
