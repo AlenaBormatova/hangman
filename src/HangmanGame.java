@@ -1,51 +1,28 @@
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class HangmanGame {
+    private static final int MAX_ERRORS = 6;
     private final WordList wordList;
     private final Scanner scanner;
-
-    private static final int MAX_ERRORS = 6;
-
-    private static final String START_COMMAND = "1";
-    private static final String EXIT_COMMAND = "0";
 
     public HangmanGame(WordList wordList, Scanner scanner) {
         this.wordList = wordList;
         this.scanner = scanner;
     }
 
-    void runMainMenu() {
-        while (true) {
-            System.out.println("\n" + "=".repeat(50));
-            System.out.println("\nПриветствую Вас. Вы меня не знаете, но я Вас знаю. Я хочу поиграть с Вами в Виселицу.");
-            System.out.println("Начать новую игру?");
-            System.out.println(START_COMMAND + " - да / " + EXIT_COMMAND + " - нет");
-            System.out.println("\nВаш выбор:");
-
-            String choice = scanner.nextLine();
-            if (choice.equals(START_COMMAND)) {
-                runGame();
-                continue;
-            } else if (choice.equals(EXIT_COMMAND)) {
-                System.out.println("Выход из приложения.");
-                break;
-            }
-            System.out.println("Ошибка ввода. Попробуйте ещё раз.\n");
-        }
-    }
-
     // один раунд игры
-    private void runGame() {
+    void runGame() {
         String word = wordList.getRandomWord();
         char[] answer = createAnswerArray(word);
-        TreeSet<Character> usedLetters = new TreeSet<>();
+        Set<Character> usedLetters = new TreeSet<>();
         int errors = 0;
 
         while (!isGameOver(answer, errors, usedLetters, word)) {
             displayGameState(answer, usedLetters, errors);
-            char letter = readAndValidateLetter(usedLetters);
+            char letter = inputUnusedRussianLetter(usedLetters);
             errors = processLetter(word, answer, usedLetters, letter, errors);
         }
     }
@@ -56,14 +33,14 @@ public class HangmanGame {
         return answer;
     }
 
-    private void displayGameState(char[] answer, TreeSet<Character> usedLetters, int errors) {
+    private void displayGameState(char[] answer, Set<Character> usedLetters, int errors) {
         System.out.println("\nСлово: " + String.valueOf(answer));
         System.out.println("\nИспользованные буквы: " + usedLetters);
-        System.out.println("\nОшибок: " + errors + " из " + MAX_ERRORS);
+        System.out.printf("\nОшибок: %d из %d  %n", errors, MAX_ERRORS);
         HangmanDrawer.draw(errors);
     }
 
-    private char readAndValidateLetter(TreeSet<Character> usedLetters) {
+    private char inputUnusedRussianLetter(Set<Character> usedLetters) {
         while (true) {
             System.out.println("Введите букву: ");
             String symbol = scanner.nextLine();
@@ -73,9 +50,9 @@ public class HangmanGame {
                 continue;
             }
 
-            char letter = symbol.charAt(0);
-            if (!isValidRussianLetter(letter)) {
-                System.out.println("Введите маленькую букву кириллицы.");
+            char letter = Character.toLowerCase(symbol.charAt(0));
+            if (!isRussianLetter(letter)) {
+                System.out.println("Введите русскую букву.");
                 continue;
             }
 
@@ -88,7 +65,7 @@ public class HangmanGame {
         }
     }
 
-    private int processLetter(String word, char[] answer, TreeSet<Character> usedLetters,
+    private int processLetter(String word, char[] answer, Set<Character> usedLetters,
                               char letter, int currentErrors) {
         usedLetters.add(letter);
 
@@ -111,7 +88,7 @@ public class HangmanGame {
         }
     }
 
-    private boolean isGameOver(char[] answer, int errors, TreeSet<Character> usedLetters, String word) {
+    private boolean isGameOver(char[] answer, int errors, Set<Character> usedLetters, String word) {
         if (errors >= MAX_ERRORS) {
             displayGameState(answer, usedLetters, errors);
             System.out.println("Вы проиграли! Загаданное слово: " + word);
@@ -124,7 +101,7 @@ public class HangmanGame {
         return false;
     }
 
-    private boolean isValidRussianLetter(char ch) {
+    private boolean isRussianLetter(char ch) {
         return (ch >= 'а' && ch <= 'я') || ch == 'ё';
     }
 

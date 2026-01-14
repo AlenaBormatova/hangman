@@ -10,25 +10,30 @@ public class WordList {
 
     private final List<String> words;
     private final Random random = new Random();
-    private static final int MIN_WORD_LENGTH = 5;
 
-    public WordList(String fileName) throws IOException {
-        this.words = initializeFromFile(fileName);
+    public WordList(String fileName, int minWordLength) {
+        this.words = initializeFromFile(fileName, minWordLength);
     }
 
-    private List<String> initializeFromFile(String fileName) throws IOException {
-        List<String> rawLines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+    private List<String> initializeFromFile(String fileName, int minWordLength) {
+        List<String> rawLines;
+        try {
+            rawLines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Failed to read file: " + fileName, e);
+        }
+
         List<String> filtered = new ArrayList<>();
 
         for (String line : rawLines) {
             String word = line.trim().toLowerCase();
-            if (word.length() >= MIN_WORD_LENGTH) {
+            if (word.length() >= minWordLength) {
                 filtered.add(word);
             }
         }
 
         if (filtered.isEmpty()) {
-            throw new IllegalStateException("Словарь пуст: " + fileName);
+            throw new IllegalArgumentException("Dictionary is empty: " + fileName);
         }
 
         return filtered;

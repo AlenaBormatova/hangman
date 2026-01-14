@@ -1,10 +1,5 @@
 public class HangmanDrawer {
 
-    public static void draw(int errors) {
-        int index = Math.min(errors, HANGMAN_STATES.length - 1);
-        System.out.print(HANGMAN_STATES[index]);
-    }
-
     private static final String[] HANGMAN_STATES = {
             // 0 ошибок
             """
@@ -76,4 +71,9 @@ public class HangmanDrawer {
                  |
             """
     };
+
+    public static void draw(int errors) {
+        int index = Math.min(errors, HANGMAN_STATES.length - 1);
+        System.out.print(HANGMAN_STATES[index]);
+    }
 }
