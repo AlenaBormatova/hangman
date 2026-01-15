@@ -20,7 +20,7 @@ public class Dictionary {
         try {
             rawLines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Failed to read file: " + fileName, e);
+            throw new IllegalArgumentException("File not found or unreadable: " + fileName, e);
         }
 
         List<String> filtered = new ArrayList<>();
