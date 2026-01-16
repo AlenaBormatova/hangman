@@ -30,6 +30,7 @@ public class HangmanGame {
             char letter = inputUnusedRussianLetter();
             processLetter(letter);
         }
+        announceGameResult();
     }
 
     private char[] createAnswerArray(String word) {
@@ -92,16 +93,24 @@ public class HangmanGame {
     }
 
     private boolean isGameOver() {
-        if (errors >= MAX_ERRORS) {
-            displayGameState();
+        return isLose() || isWin();
+    }
+
+    private boolean isLose() {
+        return errors >= MAX_ERRORS;
+    }
+
+    private boolean isWin() {
+        return isWordGuessed();
+    }
+
+    private void announceGameResult() {
+        displayGameState();
+        if (isLose()) {
             System.out.println("Вы проиграли! Загаданное слово: " + word);
-            return true;
-        }
-        if (isWordGuessed()) {
+        } else {
             System.out.println("Поздравляем! Вы отгадали слово: " + word);
-            return true;
         }
-        return false;
     }
 
     private boolean isRussianLetter(char ch) {
