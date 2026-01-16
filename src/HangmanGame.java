@@ -73,7 +73,7 @@ public class HangmanGame {
     private void processLetter(char letter) {
         usedLetters.add(letter);
 
-        if (word.indexOf(letter) != -1) { // все вхождения буквы
+        if (letterIsInWord(letter)) {
             revealLetterOccurrences(letter);
             System.out.println("Буква угадана верно!");
         } else {
@@ -115,5 +115,9 @@ public class HangmanGame {
             }
         }
         return true;
+    }
+
+    private boolean letterIsInWord(char letter) {
+        return word.indexOf(letter) != -1;
     }
 }
