@@ -18,7 +18,7 @@ public class MainWithMenu extends GameLauncher {
             """;
 
     public static void main(String[] args) {
-        new MainWithMenu().launchGame();
+        new MainWithMenu().launchGame("words.txt", 5);
     }
 
     @Override

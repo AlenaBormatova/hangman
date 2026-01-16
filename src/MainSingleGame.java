@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class MainSingleGame extends GameLauncher {
 
     public static void main(String[] args) {
-        new MainSingleGame().launchGame();
+        new MainSingleGame().launchGame("words.txt", 5);
     }
 
     @Override
