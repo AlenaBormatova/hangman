@@ -73,7 +73,6 @@ public class HangmanDrawer {
     };
 
     public static void draw(int errors) {
-        int index = Math.min(errors, HANGMAN_STATES.length - 1);
-        System.out.print(HANGMAN_STATES[index]);
+        System.out.print(HANGMAN_STATES[errors]);
     }
 }
