@@ -8,6 +8,11 @@ public class HangmanGame {
     private final Dictionary dictionary;
     private final Scanner scanner;
 
+    private String word;
+    private char[] answer;
+    private Set<Character> usedLetters = new TreeSet<>();
+    private int errors;
+
     public HangmanGame(Dictionary dictionary, Scanner scanner) {
         this.dictionary = dictionary;
         this.scanner = scanner;
@@ -15,32 +20,32 @@ public class HangmanGame {
 
     // один раунд игры
     void runGame() {
-        String word = dictionary.getRandomWord();
-        char[] answer = createAnswerArray(word);
-        Set<Character> usedLetters = new TreeSet<>();
-        int errors = 0;
+        word = dictionary.getRandomWord();
+        answer = createAnswerArray(word);
+        usedLetters.clear();
+        errors = 0;
 
-        while (!isGameOver(answer, errors, usedLetters, word)) {
-            displayGameState(answer, usedLetters, errors);
-            char letter = inputUnusedRussianLetter(usedLetters);
-            errors = processLetter(word, answer, usedLetters, letter, errors);
+        while (!isGameOver()) {
+            displayGameState();
+            char letter = inputUnusedRussianLetter();
+            processLetter(letter);
         }
     }
 
     private char[] createAnswerArray(String word) {
-        char[] answer = new char[word.length()];
-        Arrays.fill(answer, '_');
-        return answer;
+        char[] answerArray = new char[word.length()];
+        Arrays.fill(answerArray, '_');
+        return answerArray;
     }
 
-    private void displayGameState(char[] answer, Set<Character> usedLetters, int errors) {
+    private void displayGameState() {
         System.out.println("\nСлово: " + String.valueOf(answer));
         System.out.println("\nИспользованные буквы: " + usedLetters);
         System.out.printf("\nОшибок: %d из %d  %n", errors, MAX_ERRORS);
         HangmanDrawer.draw(errors);
     }
 
-    private char inputUnusedRussianLetter(Set<Character> usedLetters) {
+    private char inputUnusedRussianLetter() {
         while (true) {
             System.out.println("Введите букву: ");
             String symbol = scanner.nextLine();
@@ -65,22 +70,20 @@ public class HangmanGame {
         }
     }
 
-    private int processLetter(String word, char[] answer, Set<Character> usedLetters,
-                              char letter, int currentErrors) {
+    private void processLetter(char letter) {
         usedLetters.add(letter);
 
         if (word.indexOf(letter) != -1) { // все вхождения буквы
-            revealLetterOccurrences(word, answer, letter);
+            revealLetterOccurrences(letter);
             System.out.println("Буква угадана верно!");
         } else {
             System.out.println("Такой буквы нет!");
-            currentErrors++;
+            errors++;
         }
         System.out.println("\n" + "-".repeat(50));
-        return currentErrors;
     }
 
-    private void revealLetterOccurrences(String word, char[] answer, char letter) {
+    private void revealLetterOccurrences(char letter) {
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == letter) {
                 answer[i] = letter;
@@ -88,13 +91,13 @@ public class HangmanGame {
         }
     }
 
-    private boolean isGameOver(char[] answer, int errors, Set<Character> usedLetters, String word) {
+    private boolean isGameOver() {
         if (errors >= MAX_ERRORS) {
-            displayGameState(answer, usedLetters, errors);
+            displayGameState();
             System.out.println("Вы проиграли! Загаданное слово: " + word);
             return true;
         }
-        if (isWordGuessed(answer)) {
+        if (isWordGuessed()) {
             System.out.println("Поздравляем! Вы отгадали слово: " + word);
             return true;
         }
@@ -105,7 +108,7 @@ public class HangmanGame {
         return (ch >= 'а' && ch <= 'я') || ch == 'ё';
     }
 
-    private boolean isWordGuessed(char[] answer) {
+    private boolean isWordGuessed() {
         for (char c : answer) {
             if (c == '_') {
                 return false;
