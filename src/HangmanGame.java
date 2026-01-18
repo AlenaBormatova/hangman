@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -8,8 +7,7 @@ public class HangmanGame {
     private final Dictionary dictionary;
     private final Scanner scanner;
 
-    private String word;
-    private char[] answer;
+    private SecretWord secretWord;
     private Set<Character> usedLetters = new TreeSet<>();
     private int errors;
 
@@ -20,8 +18,7 @@ public class HangmanGame {
 
     // один раунд игры
     void runGame() {
-        word = dictionary.getRandomWord();
-        answer = createAnswerArray(word);
+        secretWord = new SecretWord(dictionary.getRandomWord());
         usedLetters.clear();
         errors = 0;
 
@@ -33,14 +30,8 @@ public class HangmanGame {
         announceGameResult();
     }
 
-    private char[] createAnswerArray(String word) {
-        char[] answerArray = new char[word.length()];
-        Arrays.fill(answerArray, '_');
-        return answerArray;
-    }
-
     private void displayGameState() {
-        System.out.println("\nСлово: " + String.valueOf(answer));
+        System.out.println("\nСлово: " + secretWord.getDisplayString());
         System.out.println("\nИспользованные буквы: " + usedLetters);
         System.out.printf("\nОшибок: %d из %d  %n", errors, MAX_ERRORS);
         HangmanDrawer.draw(errors);
@@ -74,22 +65,14 @@ public class HangmanGame {
     private void processLetter(char letter) {
         usedLetters.add(letter);
 
-        if (letterIsInWord(letter)) {
-            revealLetterOccurrences(letter);
+        if (secretWord.letterIsInWord(letter)) {
+            secretWord.revealLetterOccurrences(letter);
             System.out.println("Буква угадана верно!");
         } else {
             System.out.println("Такой буквы нет!");
             errors++;
         }
         System.out.println("\n" + "-".repeat(50));
-    }
-
-    private void revealLetterOccurrences(char letter) {
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) == letter) {
-                answer[i] = letter;
-            }
-        }
     }
 
     private boolean isGameOver() {
@@ -101,32 +84,19 @@ public class HangmanGame {
     }
 
     private boolean isWin() {
-        return isWordGuessed();
+        return secretWord.isWordGuessed();
     }
 
     private void announceGameResult() {
         displayGameState();
         if (isLose()) {
-            System.out.println("Вы проиграли! Загаданное слово: " + word);
+            System.out.println("Вы проиграли! Загаданное слово: " + secretWord.getFullWordString());
         } else {
-            System.out.println("Поздравляем! Вы отгадали слово: " + word);
+            System.out.println("Поздравляем! Вы отгадали слово: " + secretWord.getFullWordString());
         }
     }
 
     private boolean isRussianLetter(char ch) {
         return (ch >= 'а' && ch <= 'я') || ch == 'ё';
-    }
-
-    private boolean isWordGuessed() {
-        for (char c : answer) {
-            if (c == '_') {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean letterIsInWord(char letter) {
-        return word.indexOf(letter) != -1;
     }
 }
