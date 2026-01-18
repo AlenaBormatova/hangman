@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,14 +22,11 @@ public class Dictionary {
             throw new IllegalArgumentException("File not found or unreadable: " + fileName, e);
         }
 
-        List<String> filtered = new ArrayList<>();
-
-        for (String line : rawLines) {
-            String word = line.trim().toLowerCase();
-            if (word.length() >= minWordLength) {
-                filtered.add(word);
-            }
-        }
+        List<String> filtered = rawLines.stream()
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .filter(word -> word.length() >= minWordLength)
+                .toList();
 
         if (filtered.isEmpty()) {
             throw new IllegalArgumentException("Dictionary is empty: " + fileName);
